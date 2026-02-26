@@ -20,7 +20,7 @@ Start the local dev server:
 npm start
 ```
 
-The app runs at `http://localhost:3000`. Set this as your app URL in the [Miro Developer Hub](https://developers.miro.com).
+The app runs at `http://localhost:4173`. Set this as your app URL in the [Miro Developer Hub](https://developers.miro.com).
 
 ## Requirements
 
