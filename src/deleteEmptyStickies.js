@@ -38,7 +38,7 @@ export const deleteEmptyStickies = async () => {
     );
 
   } catch (error) {
-    console.error("Error executing Sticky Note Remover:", error);
+    console.error("Error executing Delete Empty Stickies:", error);
     await miro.board.notifications.showError("An error occurred while trying to delete empty sticky notes.");
   }
 };
