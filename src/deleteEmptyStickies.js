@@ -29,13 +29,37 @@ export const deleteEmptyStickies = async () => {
       return;
     }
 
-    await Promise.all(stickiesToDelete.map((item) => board.remove(item)));
+    let deletedCount = 0;
+    let lockedCount = 0;
+
+    for (const item of stickiesToDelete) {
+      try {
+        await board.remove(item);
+        deletedCount++;
+      } catch (err) {
+        if (err.message?.includes("locking")) {
+          lockedCount++;
+        } else {
+          throw err;
+        }
+      }
+    }
 
     await miro.board.deselect();
 
-    await miro.board.notifications.showInfo(
-      `${stickiesToDelete.length} sticky note${stickiesToDelete.length === 1 ? " was" : "s were"} successfully deleted!`
-    );
+    if (deletedCount > 0 && lockedCount === 0) {
+      await miro.board.notifications.showInfo(
+        `✅${deletedCount} sticky note${deletedCount === 1 ? " was" : "s were"} successfully deleted!`
+      );
+    } else if (deletedCount > 0 && lockedCount > 0) {
+      await miro.board.notifications.showInfo(
+        `${deletedCount} sticky note${deletedCount === 1 ? " was" : "s were"} deleted, but ${lockedCount} ${lockedCount === 1 ? "was" : "were"} locked and could not be removed.`
+      );
+    } else if (lockedCount > 0) {
+      await miro.board.notifications.showError(
+        `${lockedCount} sticky note${lockedCount === 1 ? " is" : "s are"} locked and could not be deleted.`
+      );
+    }
 
   } catch (error) {
     console.error("Error executing Delete Empty Stickies:", error);
